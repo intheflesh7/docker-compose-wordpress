@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "127.0.0.1:8080:80"
+    restart: unless-stopped
+
+  db:
+     image: mysql:5.7
+     volumes:
+       - ./opt/mysql:/var/lib/mysql
+     restart: unless-stopped
+     environment:
+       MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+       MYSQL_DATABASE: $DB_NAME
+       MYSQL_USER: $DB_USER
+       MYSQL_PASSWORD: $DB_PASSWORD
+
+  wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     volumes:
+       - ./opt/wordpress:/var/www/html
+     ports:
+        - "127.0.0.1:8081:80"
+     restart: unless-stopped
+     environment:
+       WORDPRESS_DB_HOST: $DB_HOST
+       WORDPRESS_DB_USER: $DB_USER
+       WORDPRESS_DB_PASSWORD: $DB_PASSWORD
+       WORDPRESS_DB_NAME: $DB_NAME
