@@ -1,6 +1,4 @@
 version: "3"
-volumes:
-   wordpress:
 
 services:
   nginx:
@@ -9,7 +7,7 @@ services:
       - .env
     volumes:
       - ./etc/nginx/templates:/etc/nginx/templates
-      - wordpress:/var/www/html
+      - ./opt/wordpress:/var/www/html
     ports:
       - "127.0.0.1:8080:80"
     restart: unless-stopped
@@ -28,11 +26,11 @@ services:
   wordpress:
      depends_on:
        - db
-     image: wordpress:php8.1-fpm-alpine
+     image: wordpress:fpm-alpine
      volumes:
-        - wordpress:/var/www/html
+       - ./opt/wordpress:/var/www/html
      ports:
-        - "127.0.0.1:8081:80"
+       - "127.0.0.1:8081:80"
      restart: unless-stopped
      environment:
        WORDPRESS_DB_HOST: $DB_HOST
